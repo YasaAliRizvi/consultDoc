@@ -1,21 +1,36 @@
-import { StatusBar } from 'expo-status-bar';
-import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import * as React from 'react';
+import { View, Text } from 'react-native';
+import {Provider as PaperProvider} from 'react-native-paper';
+import { NavigationContainer } from '@react-navigation/native';
+import { createDrawerNavigator } from '@react-navigation/drawer';
+import LoginScreen from './App/Screens/LoginScreen';
+import UserProfile from './App/Screens/UserProfile';
+import HomeScreen from './App/Screens/HomeScreen';
+import DoctorSearch from './App/Screens/DoctorSearch';
+import SymptomsScreen from './App/Screens/SymptomsScreen';
+import MedicalRecords from './App/Screens/MedicalRecords';
+import ViewAppointment from './App/Screens/ViewAppointment';
 
-export default function App() {
+import DrawerContent from './App/Screens/DrawerContent';
+
+const Drawer = createDrawerNavigator();
+
+function App() {
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
-  );
-}
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+    <PaperProvider>
+       <NavigationContainer>
+         <Drawer.Navigator initialRouteName="Home" drawerContent={props => <DrawerContent {...props}/>}>
+           <Drawer.Screen name="Home" component={HomeScreen} />
+           <Drawer.Screen name="Login" component={LoginScreen} />
+           <Drawer.Screen name="Profile" component={UserProfile} />
+           <Drawer.Screen name="Summary" component={DoctorSearch} />
+           <Drawer.Screen name="Consult A Doctor" component={SymptomsScreen} />
+           <Drawer.Screen name="Upload Medical Records" component={MedicalRecords} />
+           <Drawer.Screen name="View Appointments" component={ViewAppointment} />
+         </Drawer.Navigator>
+       </NavigationContainer>
+    </PaperProvider>
+    );
+  }
+  
+  export default App;
