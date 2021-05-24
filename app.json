@@ -8,7 +8,7 @@
     "splash": {
       "image": "./App/assets/splash.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#0B369C"
     },
     "updates": {
       "fallbackToCacheTimeout": 0
@@ -28,6 +28,7 @@
     "web": {
       "favicon": "./App/assets/favicon.png"
     },
-    "description": "An application to consult doctors online"
+    "description": "An application to consult doctors online",
+    "scheme": "consultdoc"
   }
 }

@@ -17,7 +17,7 @@ function SymptomsScreen({navigation}) {
                         onPress={()=> navigation.goBack()} 
                     />}
                 centerComponent={{ text: 'CONSULT A DOCTOR', style: { color: '#fff' } }}
-                rightComponent={{ icon: 'logout', color: '#fff' }}
+                // rightComponent={{ icon: 'logout', color: '#fff' }}
             />
             <View style={styles.content}>
                 <ScrollView>

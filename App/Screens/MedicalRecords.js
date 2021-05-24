@@ -1,11 +1,65 @@
-import React from 'react';
-import { ImageBackground } from 'react-native';
+import React, { useContext, useState } from 'react';
 import { View, StyleSheet, Text } from 'react-native';
 import { Header, FAB, Button, Icon} from 'react-native-elements';
-import { TouchableNativeFeedback } from 'react-native-gesture-handler';
+import { TouchableNativeFeedback, TouchableOpacity } from 'react-native-gesture-handler';
 //import Icon from 'react-native-vector-icons/FontAwesome5';
+import * as ImagePicker from 'expo-image-picker';
+import firebase from 'firebase';
+import { Image } from 'react-native';
 
-function MedicalRecords({navigation}) {
+
+function MedicalRecords({navigation}) {    
+    const [data, setData] = React.useState({
+        user: firebase.auth().currentUser,
+        record: null,
+        recordExists: false,
+    });
+    const [userRef, setRef] = useState(firebase.database().ref('/users/'+data.user.uid));
+
+    userRef.once('value', function(snapshot){
+        setData({
+            ...data,
+            record: snapshot.child('medical_record').val(),
+            recordExists: snapshot.child('medical_record').exists()
+        })
+    });
+
+    const uploadMedicalRecord = (uri) => {
+        userRef.update({
+            medical_record: uri
+        })
+    }
+
+    React.useEffect(() => {
+        (async () => {
+          if (Platform.OS !== 'web') {
+            const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+            if (status !== 'granted') {
+              alert('Sorry, we need camera roll permissions to make this work!');
+            }
+          }
+        })();
+    }, []);
+    
+    const pickImage = async () => {
+        let result = await ImagePicker.launchImageLibraryAsync({
+          mediaTypes: ImagePicker.MediaTypeOptions.All,
+          allowsEditing: true,
+          quality: 1,
+        });
+    
+        if (!result.cancelled) 
+        {
+        //   setImage(result.uri);
+            setData({
+                ...data,
+                record: result.uri
+            })
+            console.log(result.uri);
+            uploadMedicalRecord(result.uri);
+        }
+    };
+
     return (
         <View style={styles.container}>
             <Header style={styles.header}
@@ -16,24 +70,19 @@ function MedicalRecords({navigation}) {
                         onPress={()=>navigation.goBack()} 
                     />}
                 centerComponent={{ text: 'UPLOAD MEDICAL RECORDS', style: { color: '#fff' } }}
-                rightComponent={{ icon: 'logout', color: '#fff' }}
             />
             <View style={styles.content}>
-                {/* <ImageBackground source={require('../assets/rxlogo.jpg' )} style={styles.image}> */}
-                    <Text style={styles.centerText}>Click the button to add your Medical Records</Text>
-                    <View style={styles.button}>
-                        <Button icon={
-                            <Icon 
-                                name="plus" 
-                                type="font-awesome"  
-                                size={35} color="white"
-                            />
-                            }
-                            raised
-                            size="large"
-                        />
+                    {
+                        !data.recordExists ?
+                        <Text style={styles.centerText}>Upload an image of your Medical Records</Text>
+                        :
+                        <Image source={{ uri: data.record }} style={styles.image}/>
+                    }
+                    <View style={styles.buttonContainer}>
+                        <TouchableOpacity style={styles.button} onPress={pickImage}>
+                            <Icon name="plus-a"  size={30} color="white" type="fontisto"/>
+                        </TouchableOpacity>
                     </View>
-                {/* </ImageBackground> */}
             </View>
         </View>
     );
@@ -58,12 +107,21 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         backgroundColor: '#c3e1e3'
     },
-    button: {
+    buttonContainer: {
         position: 'absolute',
         bottom: 0,
         right: 0,
         margin: 20,
-        borderRadius: 50,
+    },
+    button: {
+        borderWidth:1,
+        borderColor:'rgba(0,0,0,0.2)',
+        alignItems:'center',
+        justifyContent:'center',
+        width:60,
+        height:60,
+        backgroundColor:'#00f',
+        borderRadius:50,
     },
     centerText: {
         fontSize: 15,
@@ -71,12 +129,23 @@ const styles = StyleSheet.create({
         fontStyle: 'italic'
     }, 
     image: {
-        flex: 1,
-        width: 50,
-        height: 100,
-        resizeMode: "cover",
-        justifyContent: "center"
-    }
+        width: 300,
+        height: 300,
+        resizeMode: 'center',
+        position: 'absolute',
+        top: 1,
+        left: 20,
+        margin: 10,
+        borderRadius: 5,
+        shadowColor: "#000",
+        shadowOffset: {
+	        width: 0,
+	        height: 3,
+        },
+        shadowOpacity: 0.29,
+        shadowRadius: 4.65,
+        // elevation: 7,
+        }
 });
 
 export default MedicalRecords;

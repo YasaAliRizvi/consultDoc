@@ -1,30 +1,43 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {Text, Image, StyleSheet, View} from 'react-native';
 import {Header, Icon} from 'react-native-elements';
 import { ScrollView, TouchableNativeFeedback } from 'react-native-gesture-handler';
 import {Card, Title, Paragraph} from 'react-native-paper';
 import MedicalIcon from '../Components/MedicalIcon';
+import firebase from 'firebase';
 
 function HomeScreen({navigation}) {
-    return (
-        <View style={styles.container}>
+    const [user, setUser] = useState(firebase.auth().currentUser);
+    const [userRef, setRef] = useState(firebase.database().ref('/users/'+user.uid));
+    const [isDoctor, checkDoctor] = useState(false);
+
+    useEffect(()=>{
+        userRef.once('value').then(function(snapshot){
+            checkDoctor(snapshot.child('isDoctor').val())
+        })
+    })
+
+    if(!isDoctor)
+    {
+        return (
+            <View style={styles.container}>
             <Header style={styles.header}
                 placement='left'
                 leftComponent={<Icon name="menu" color="#fff" onPress={()=> navigation.openDrawer()} />}
                 centerComponent={{ text: 'HOME', style: { color: '#fff' } }}
-                rightComponent={{ icon: 'logout', color: '#fff' }}
-            />
+                // rightComponent={{ icon: 'logout', color: '#fff' }}
+                />
             <View style={styles.content}>
                 <ScrollView>
                     <ScrollView horizontal style={styles.offer}>
                         <Image 
                             style={styles.image}
                             source={require('../assets/offer-1.png')}
-                        />
+                            />
                         <Image 
                             style={styles.image}
                             source={require('../assets/offer-2.png')}
-                        />
+                            />
                     </ScrollView>
                     <TouchableNativeFeedback onPress={()=>navigation.navigate('Consult A Doctor')}>
                         <Card style={styles.card}>
@@ -66,6 +79,43 @@ function HomeScreen({navigation}) {
             </View>
         </View>
     );
+    }
+    else
+    {
+        return(
+            <View style={styles.container}>
+            <Header style={styles.header}
+                placement='left'
+                leftComponent={<Icon name="menu" color="#fff" onPress={()=> navigation.openDrawer()} />}
+                centerComponent={{ text: 'HOME', style: { color: '#fff' } }}
+                // rightComponent={{ icon: 'logout', color: '#fff' }}
+                />
+            <View style={styles.content}>
+                <ScrollView>
+                    <ScrollView horizontal style={styles.offer}>
+                        <Image 
+                            style={styles.image}
+                            source={require('../assets/offer-1.png')}
+                            />
+                        <Image 
+                            style={styles.image}
+                            source={require('../assets/offer-2.png')}
+                            />
+                    </ScrollView>
+                    <TouchableNativeFeedback onPress={()=>navigation.navigate('View Appointments')}>
+                        <Card style={styles.card}>
+                            <Card.Cover source={require('../assets/doctor.jpeg')} />
+                            <Card.Content>
+                              <Title>View Appointment</Title>
+                              <Paragraph>View your scheduled appointments</Paragraph>
+                            </Card.Content>
+                        </Card>
+                    </TouchableNativeFeedback>
+                </ScrollView>
+            </View>
+        </View>
+        );
+    }
 }
 
 const styles = StyleSheet.create({

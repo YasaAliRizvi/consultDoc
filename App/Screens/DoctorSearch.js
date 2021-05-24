@@ -2,8 +2,12 @@ import React from 'react';
 import { View, StyleSheet, Text} from 'react-native';
 import { ScrollView, TouchableNativeFeedback } from 'react-native-gesture-handler';
 import { Avatar, Rating, Header, ListItem, Button, Divider, Icon } from 'react-native-elements';
+import { RadioButton } from 'react-native-paper';
 
 function DoctorSearch({navigation}) {
+    [checked, setChecked] = React.useState('first');
+    [doctor, setDoctor] = React.useState('first');
+
     return (
         <View style={styles.container}>
             <Header style={styles.header}
@@ -15,7 +19,7 @@ function DoctorSearch({navigation}) {
                         onPress={()=> navigation.goBack()} 
                     />}
                 centerComponent={{ text: 'SUMMARY', style: { color: '#fff' } }}
-                rightComponent={{ icon: 'logout', color: '#fff' }}
+                // rightComponent={{ icon: 'logout', color: '#fff' }}
             />
 
             <View style={styles.content}>
@@ -28,6 +32,12 @@ function DoctorSearch({navigation}) {
                     <Text style={styles.subheading}>View Doctors in the consultation network</Text>
                     <ScrollView horizontal style={styles.doctorList}>
                         <TouchableNativeFeedback style={styles.doctor}>
+                        <RadioButton
+                            value='first'
+                            status={doctor === 'first'?'checked':'unchecked'}
+                            onPress={() => setDoctor('first')}
+                            color = 'blue'
+                        />
                         <Avatar 
                             rounded 
                             size="medium" 
@@ -43,6 +53,12 @@ function DoctorSearch({navigation}) {
                         </TouchableNativeFeedback>
 
                         <TouchableNativeFeedback style={styles.doctor}>
+                        <RadioButton
+                            value='second'
+                            status={doctor === 'second'?'checked':'unchecked'}
+                            onPress={() => setDoctor('second')}
+                            color = 'blue'
+                        />
                         <Avatar 
                             rounded 
                             size="medium" 
@@ -58,6 +74,12 @@ function DoctorSearch({navigation}) {
                         </TouchableNativeFeedback>
 
                         <TouchableNativeFeedback style={styles.doctor}>
+                        <RadioButton
+                            value='third'
+                            status={doctor === 'third'?'checked':'unchecked'}
+                            onPress={() => setDoctor('third')}
+                            color = 'blue'
+                        />
                         <Avatar 
                             rounded 
                             size="medium" 
@@ -73,6 +95,12 @@ function DoctorSearch({navigation}) {
                         </TouchableNativeFeedback>
 
                         <TouchableNativeFeedback style={styles.doctor}>
+                        <RadioButton
+                            value='fourth'
+                            status={doctor === 'fourth'?'checked':'unchecked'}
+                            onPress={() => setDoctor('fourth')}
+                            color = 'blue'
+                        />
                         <Avatar 
                             rounded 
                             size="medium" 
@@ -93,10 +121,11 @@ function DoctorSearch({navigation}) {
                     <View style={styles.priceList}>
                         <ListItem bottomDivider>
                             <View style={styles.listContent}>
-                                <ListItem.CheckBox 
-                                    checked
-                                    checkedIcon="dot-circle-o"
-                                    uncheckedIcon="circle-o"
+                                <RadioButton
+                                    value='first'
+                                    status={checked === 'first'?'checked':'unchecked'}
+                                    onPress={() => setChecked('first')}
+                                    color = 'blue'
                                 />
                                 <ListItem.Content style={{marginLeft: 8, marginRight: 8}}>
                                     <View>
@@ -114,9 +143,15 @@ function DoctorSearch({navigation}) {
 
                         <ListItem bottomDivider>
                         <View style={styles.listContent}>
-                                <ListItem.CheckBox 
+                                {/* <ListItem.CheckBox 
                                     checkedIcon="dot-circle-o"
                                     uncheckedIcon="circle-o"
+                                /> */}
+                                <RadioButton
+                                    value='second'
+                                    status={checked === 'second'?'checked':'unchecked'}
+                                    onPress={() => setChecked('second')}
+                                    color = 'blue'
                                 />
                                 <ListItem.Content style={{marginLeft: 8, marginRight: 8}}>
                                     <View>
@@ -138,9 +173,11 @@ function DoctorSearch({navigation}) {
 
                         <ListItem bottomDivider>
                             <View style={styles.listContent}>
-                                <ListItem.CheckBox 
-                                    checkedIcon="dot-circle-o"
-                                    uncheckedIcon="circle-o"
+                                <RadioButton
+                                    value='third'
+                                    status={checked === 'third'?'checked':'unchecked'}
+                                    onPress={() => setChecked('third')}
+                                    color='blue'
                                 />
                                 <ListItem.Content style={{marginLeft: 8, marginRight: 8}}>
                                     <View>
@@ -166,6 +203,7 @@ function DoctorSearch({navigation}) {
                     <Text style={{color: 'blue'}}>View Fee Breakup</Text>
                     <Button 
                         title="Continue"
+                        onPress={()=> navigation.navigate('Slot')}
                     />
                 </View>
             </View>

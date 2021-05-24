@@ -1,31 +1,94 @@
-import React from 'react';
-import { ImageBackground } from 'react-native';
+import React, { useEffect, useState } from 'react';
 import { View, StyleSheet, Text } from 'react-native';
 import { Header, Button, Icon } from 'react-native-elements';
-import { TouchableNativeFeedback } from 'react-native-gesture-handler';
+import Appointment from '../Components/Appointment';
+import DoctorAppointment from '../Components/DoctorAppointment';
+import firebase from 'firebase';
 
-function MedicalRecords({navigation}) {
-    return (
-        <View style={styles.container}>
+function ViewAppointments({navigation}) {
+    const [user, setUser] = useState(firebase.auth().currentUser);
+    const [userRef, setRef] = useState(firebase.database().ref('/users/'+user.uid));
+    const [appointRef, setAppoint] = useState(firebase.database().ref('/appointments/'));
+    const [data, setData] = useState({
+        appointExists:false,
+        doctor:'',
+        time:'',
+        appointment:null,
+    });
+    const [isDoctor, checkDoctor] = useState(false);
+
+    useEffect(()=>{
+        appointRef.once('value').then(function(snapshot){
+            if(snapshot.exists())
+            {
+                snapshot.forEach(function(childSnapshot){
+                    data.appointment = childSnapshot.val(); 
+                });
+            }
+            console.log(data.appointment);
+            setData({
+                ...data,
+                appointExists: snapshot.exists(),
+            })
+        })
+    })
+
+    useEffect(()=>{
+        userRef.once('value').then(function(snapshot){
+            checkDoctor(snapshot.child('isDoctor').val())
+        })
+    })
+
+    if(!isDoctor)
+    {
+        return (
+            <View style={styles.container}>
             <Header style={styles.header}
                 placement='left'
                 leftComponent={
                     <Icon 
-                        name="arrowleft" 
-                        type="antdesign" color="#fff"
+                    name="arrowleft" 
+                    type="antdesign" color="#fff"
                         onPress={()=> navigation.goBack()} 
-                    />}
-                centerComponent={{ text: 'VIEW APPOINTMENTS', style: { color: '#fff' } }}
-                rightComponent={{ icon: 'logout', color: '#fff' }}
-            />
-            <View style={styles.content}>
+                        />}
+                        centerComponent={{ text: 'VIEW APPOINTMENTS', style: { color: '#fff' } }}
+                        />
+            <View style={(!data.appointExists && styles.contentNil) || (data.appointExists && styles.content)}>
+                {
+                    !data.appointExists ?
                     <Text style={styles.centerText}>No Appointments Here!</Text>
-                    <View style={styles.button}>
-                        <Button title="Book an Appointment" onPress={()=>navigation.navigate("Consult A Doctor")}/>
-                    </View>
+                    :
+                    <Appointment />
+                }
             </View>
         </View>
     );
+    }
+    else
+    {
+        return (
+            <View style={styles.container}>
+            <Header style={styles.header}
+                placement='left'
+                leftComponent={
+                    <Icon 
+                    name="arrowleft" 
+                    type="antdesign" color="#fff"
+                        onPress={()=> navigation.goBack()} 
+                        />}
+                        centerComponent={{ text: 'VIEW APPOINTMENTS', style: { color: '#fff' } }}
+                        />
+            <View style={(!data.appointExists && styles.contentNil) || (data.appointExists && styles.content)}>
+                {
+                    !data.appointExists ?
+                    <Text style={styles.centerText}>No Appointments Here!</Text>
+                    :
+                    <DoctorAppointment/>
+                }
+            </View>
+        </View>
+    );
+    }
 }
 
 const styles = StyleSheet.create({
@@ -41,10 +104,16 @@ const styles = StyleSheet.create({
         top: 0,
         alignItems: 'center'
     },
-    content: {
+    contentNil: {
         flex: 5,
         justifyContent: 'center',
         alignItems: 'center',
+        backgroundColor: '#c3e1e3'
+    },
+    content: {
+        flex: 5,
+        justifyContent: 'flex-start',
+        alignItems: 'stretch',
         backgroundColor: '#c3e1e3'
     },
     button: {
@@ -65,4 +134,4 @@ const styles = StyleSheet.create({
     }
 });
 
-export default MedicalRecords;
+export default ViewAppointments;
