@@ -18,6 +18,7 @@ import FAQScreen from './App/Screens/FAQScreen';
 
 import firebase from 'firebase';
 import { firebaseConfig } from './config';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 if(!firebase.apps.length)
 {
   firebase.initializeApp(firebaseConfig);
@@ -51,6 +52,7 @@ function App() {
   }
 
   return (
+    <SafeAreaProvider>
     <PaperProvider>
         <NavigationContainer>
          {console.log(loginState)}
@@ -71,6 +73,7 @@ function App() {
         }
         </NavigationContainer>
     </PaperProvider>
+    </SafeAreaProvider>
     );
   }
   

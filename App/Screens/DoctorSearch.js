@@ -4,10 +4,11 @@ import { ScrollView, TouchableNativeFeedback } from 'react-native-gesture-handle
 import { Avatar, Rating, Header, ListItem, Button, Divider, Icon } from 'react-native-elements';
 import { RadioButton } from 'react-native-paper';
 
-function DoctorSearch({navigation}) {
+function DoctorSearch({route, navigation}) {
     [checked, setChecked] = React.useState('first');
     [doctor, setDoctor] = React.useState('first');
-
+    [docName, setName] = React.useState('');
+    const {title} = route.params;
     return (
         <View style={styles.container}>
             <Header style={styles.header}
@@ -19,12 +20,11 @@ function DoctorSearch({navigation}) {
                         onPress={()=> navigation.goBack()} 
                     />}
                 centerComponent={{ text: 'SUMMARY', style: { color: '#fff' } }}
-                // rightComponent={{ icon: 'logout', color: '#fff' }}
             />
 
             <View style={styles.content}>
                 <ScrollView>
-                    <Text style={styles.heading}>Consultation for General Health Problems</Text>
+                    <Text style={styles.heading}>Consultation for {title}</Text>
                     <Divider/>
                     
                     <View style={styles.doctorListContainer}>
@@ -35,7 +35,7 @@ function DoctorSearch({navigation}) {
                         <RadioButton
                             value='first'
                             status={doctor === 'first'?'checked':'unchecked'}
-                            onPress={() => setDoctor('first')}
+                            onPress={() => {setDoctor('first'); setName('Rajat Dikshit')}}
                             color = 'blue'
                         />
                         <Avatar 
@@ -56,7 +56,7 @@ function DoctorSearch({navigation}) {
                         <RadioButton
                             value='second'
                             status={doctor === 'second'?'checked':'unchecked'}
-                            onPress={() => setDoctor('second')}
+                            onPress={() => {setDoctor('second'); setName('Suryakant Sharma')}}
                             color = 'blue'
                         />
                         <Avatar 
@@ -77,7 +77,7 @@ function DoctorSearch({navigation}) {
                         <RadioButton
                             value='third'
                             status={doctor === 'third'?'checked':'unchecked'}
-                            onPress={() => setDoctor('third')}
+                            onPress={() => {setDoctor('third'); setName('Divakar Dalela')}}
                             color = 'blue'
                         />
                         <Avatar 
@@ -98,7 +98,7 @@ function DoctorSearch({navigation}) {
                         <RadioButton
                             value='fourth'
                             status={doctor === 'fourth'?'checked':'unchecked'}
-                            onPress={() => setDoctor('fourth')}
+                            onPress={() => {setDoctor('fourth'); setName('Rajendra Saha')}}
                             color = 'blue'
                         />
                         <Avatar 
@@ -203,7 +203,7 @@ function DoctorSearch({navigation}) {
                     <Text style={{color: 'blue'}}>View Fee Breakup</Text>
                     <Button 
                         title="Continue"
-                        onPress={()=> navigation.navigate('Slot')}
+                        onPress={()=> navigation.navigate('Slot',{doctor: docName})}
                     />
                 </View>
             </View>

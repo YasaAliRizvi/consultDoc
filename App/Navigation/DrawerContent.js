@@ -49,13 +49,13 @@ function DrawerContent(props) {
                             {
                                 (picCheck) ?
                                 <Avatar.Image 
-                                size={50}
+                                size={70}
                                 source={{uri: pictureUrl}}
                                 />
                                 :
                             <Avatar.Icon
                             icon="account"
-                            size = {50}
+                            size = {70}
                             />
                             }
                             <View style={{marginLeft: 15, flexDirection: 'column'}}>
@@ -119,7 +119,7 @@ function DrawerContent(props) {
                                 label = "Medical Records"
                                 onPress = {() => {props.navigation.navigate('Upload Medical Records')}}
                                 />
-                        <DrawerItem 
+                        {/* <DrawerItem 
                             icon = {({color, size}) => (
                                 <Icon 
                                 name='credit-card' color={color} size={size}
@@ -127,7 +127,7 @@ function DrawerContent(props) {
                                 )} 
                                 label = "Payment Plans"
                                 onPress = {() => {props.navigation.navigate('Home')}}
-                                />
+                                /> */}
                     </Drawer.Section>
                     <Drawer.Section style={styles.drawerSection}>
                         <DrawerItem 

@@ -25,7 +25,7 @@ function SymptomsScreen({navigation}) {
                         <Text style={styles.heading}>Not Feeling Too Well?</Text>
                         <Text style={styles.subtext}>Treat common symptoms instantly via video consultation</Text>
                         <View style={styles.symptomList}>
-                            <MedicalIcon name="stethoscope" text="General Consultation" />
+                            <MedicalIcon name="stethoscope" text="General Health Problems" />
                             <MedicalIcon name="tooth" text="Dental Problems"/>
                             <MedicalIcon name="eye" text="Eye Problems"/>
                             <MedicalIcon name="heartbeat" text="Cardiac Problems"/>

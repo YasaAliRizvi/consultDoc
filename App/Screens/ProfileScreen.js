@@ -7,6 +7,8 @@ import { Image } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 
 function ProfileScreen({navigation}) {
+    const [isDoctor, checkDoctor] = React.useState(false);
+
     const [data, setData] = React.useState({
         user: firebase.auth().currentUser,
         picture: null,
@@ -14,9 +16,12 @@ function ProfileScreen({navigation}) {
         first_name: '',
         last_name: '',
         email: '',
-        age: '',
+        age: 0,
         address:'',
-        contact:'',
+        contact:0,
+        degree:'',
+        speciality:'',
+        experience:'',
         ageExists:false,
         addrExists:false,
         contactExists:false
@@ -35,14 +40,23 @@ function ProfileScreen({navigation}) {
             email: snapshot.child('email').val(),
             age: snapshot.child('age').val(),
             address: snapshot.child('address').val(),
-            contact: snapshot.child('contact').val(),
+            contact: snapshot.child('contact_no').val(),
+            degree: snapshot.child('degree').val(),
+            speciality: snapshot.child('speciality').val(),
+            experience: snapshot.child('experience').val(),
             ageExists: snapshot.child('age').exists(),
             addrExists: snapshot.child('address').exists(),
             contactExists: snapshot.child('contact').exists(),
-        })
-    });
-})
+            })
+        });
+    })
     
+    useEffect(()=>{
+        userRef.once('value').then(function(snapshot){
+            checkDoctor(snapshot.child('isDoctor').val())
+        })
+    })
+
     const uploadProfilePicture = (uri) => {
         userRef.update({
             profile_picture: uri
@@ -52,7 +66,6 @@ function ProfileScreen({navigation}) {
     const handleInputChange = (first, last, email, age, address, contact) => {
         console.log("update db");
         console.log(age);
-        console.log(address);
         userRef.update({
             first_name: first,
             last_name: last,
@@ -62,7 +75,6 @@ function ProfileScreen({navigation}) {
             contact_no: contact
         })
     }
-
 
     React.useEffect(() => {
         (async () => {
@@ -112,7 +124,22 @@ function ProfileScreen({navigation}) {
                     <View style={{justifyContent:'center'}}>
                         {
                             data.picExists ?
-                            (<Image source={{uri: data.picture}} style={styles.button}/>)
+                            (
+                            <View style={{flexDirection:'row',alignItems:'flex-end'}}>
+                                <Image source={{uri: data.picture}} style={styles.button}/>
+                                <TouchableOpacity 
+                                    style={
+                                        [styles.button,
+                                            {   marginLeft:-28,
+                                                width:35, 
+                                                height:35
+                                            }
+                                        ]}
+                                    onPress={pickImage}
+                                >
+                                    <Icon name="camera-plus"  size={20} color="white" type="material-community"/>
+                                </TouchableOpacity>
+                            </View>)
                             :
                             <TouchableOpacity style={styles.button} onPress={pickImage}>
                                 <Icon name="camera-plus"  size={30} color="white" type="material-community"/>
@@ -157,14 +184,8 @@ function ProfileScreen({navigation}) {
                         <TextInput 
                             placeholder="Your Email Id"
                             value={data.email}
-                            editable={editable}
+                            editable={false}
                             style={styles.textInput}
-                            onChangeText={(val)=> {
-                                setData({
-                                    ...data, 
-                                    email: val
-                                })
-                            }}
                         />
                     </View>
 
@@ -173,15 +194,14 @@ function ProfileScreen({navigation}) {
                         <TextInput 
                             placeholder="Your Age"
                             editable={editable}
+                            value={(data.age) ? data.age.toString(): null}
                             style={styles.textInput}
                             keyboardType='numeric'
                             onChangeText={(val)=> {
-                                console.log(val);
                                 setData({
-                                    ...data, 
+                                    ...data,
                                     age: val
                                 });
-                                console.log(data.age);
                             }}
                         />
                     </View>
@@ -191,6 +211,7 @@ function ProfileScreen({navigation}) {
                         <TextInput 
                             placeholder="Your Address"
                             editable={editable}
+                            value={data.address}
                             style={styles.textInput}
                             multiline
                             numberOfLines={4}
@@ -208,6 +229,7 @@ function ProfileScreen({navigation}) {
                         <TextInput 
                             placeholder="Your Contact Number"
                             editable={editable}
+                            value={(data.contact) ? data.contact.toString(): null}
                             style={styles.textInput}
                             keyboardType='numeric'
                             onChangeText={(val)=> {
@@ -215,10 +237,60 @@ function ProfileScreen({navigation}) {
                                     ...data, 
                                     contact: val
                                 });
-                                console.log(data.contact)
                             }}
                         />
                     </View>
+                    {isDoctor &&
+                    (
+                    <View>
+                        <View style={styles.action}>
+                            <Text style={styles.text}>Degree</Text>
+                            <TextInput 
+                                placeholder="Your Highest Degree"
+                                value={data.degree}
+                                editable={editable}
+                                style={styles.textInput}
+                                onChangeText={(val)=> {
+                                    setData({
+                                        ...data, 
+                                        degree: val
+                                    });
+                                }}
+                                />
+                        </View>
+                        <View style={styles.action}>
+                            <Text style={styles.text}>Speciality</Text>
+                            <TextInput 
+                                placeholder="Your Speciality"
+                                value={data.speciality}
+                                editable={editable}
+                                style={styles.textInput}
+                                onChangeText={(val)=> {
+                                    setData({
+                                        ...data, 
+                                        speciality: val
+                                    });
+                                }}
+                            />
+                        </View>
+                        <View style={styles.action}>
+                            <Text style={styles.text}>Experience</Text>
+                            <TextInput 
+                                placeholder="Your Experience (in years)"
+                                editable={editable}
+                                value={data.experience}
+                                style={styles.textInput}
+                                onChangeText={(val)=> {
+                                    setData({
+                                        ...data, 
+                                        experience: val
+                                    });
+                                }}
+                            />
+                        </View>
+                    </View>
+                    )
+                    }
                 </ScrollView>
                 <View style={styles.buttonContainer}>
                     <TouchableOpacity 
@@ -287,8 +359,8 @@ const styles = StyleSheet.create({
         borderColor:'rgba(0,0,0,0.2)',
         alignItems:'center',
         justifyContent:'center',
-        width:90,
-        height:90,
+        width:100,
+        height:100,
         backgroundColor:'#00f',
         borderRadius:50,
     },

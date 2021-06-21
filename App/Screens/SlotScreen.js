@@ -3,18 +3,45 @@ import React, { useState } from 'react';
 import { View, StyleSheet, Text, Modal, Pressable} from 'react-native';
 import { Header, ListItem, Button, Icon } from 'react-native-elements';
 import { RadioButton } from 'react-native-paper';
+import {TouchableOpacity} from 'react-native-gesture-handler';
 import { firebaseConfig } from '../../config';
 
-function SlotScreen({navigation}) {
+function SlotScreen({route, navigation}) {
+    // var today = new Date();
+    // var dd = String(today.getDate()).padStart(2, '0');
+    // var mm = String(today.getMonth() + 1).padStart(2, '0');
+    // var yyyy = today.getFullYear();
+    // today = dd + '/' + mm + '/' + yyyy;
+
     const [user, setUser] = useState(firebase.auth().currentUser);
     const [userRef, setRef] = useState(firebase.database().ref('/users/'+user.uid));
     const [appointRef, setAppoint] = useState(firebase.database().ref('/appointments/'));
     const [modalVisible, setModalVisible] = useState(false);
     const [checked, setChecked] = useState('first');
     const [time, setTime] = useState('9:00 am - 12:00 pm');
-    const bookAppointment = (time) => {
+    // const [date, setDate] = useState(today.toString());
+    // const [mode, setMode] = useState('date');
+    // const [show, setShow] = useState(false);
+    const {doctor} = route.params;
+
+    // const onChange = (event, selectedDate) => {
+    //   const currentDate = selectedDate || date;
+    //   setShow(Platform.OS === 'android');
+    //   setDate(JSON.stringify(currentDate));
+    // };
+
+    // const showMode = (currentMode) => {
+    //   setShow(true);
+    //   setMode(currentMode);
+    // };
+
+    // const showDatepicker = () => {
+    //   showMode('date');
+    // };
+
+    const bookAppointment = () => {
         appointRef.push().set({
-            doctor:'Rajat Dikshit',
+            doctor: doctor,
             userId: user.uid,
             time: time,
         })
@@ -81,10 +108,27 @@ function SlotScreen({navigation}) {
                         </View>
                     </ListItem>
                 </View>
+                {/* <Text style={styles.heading}>Select Date for Consultation</Text>
+                <View style={styles.action}>
+                    <Text>{date}</Text>
+                    <TouchableOpacity style={styles.button} onPress={showDatepicker}>
+                        <Icon name="calendar"  size={25} color="white" type="font-awesome"/>
+                    </TouchableOpacity>
+                </View>
+                {show && (
+                <DateTimePicker
+                  testID="dateTimePicker"
+                  value={date}
+                  mode={mode}
+                  is24Hour={true}
+                  display="default"
+                  onChange={onChange}
+                />
+                )} */}
                 <View style={styles.bottomBar}>
                     <Button 
                         title="Book Appointment"
-                        onPress={() => {setModalVisible(true); bookAppointment(time)}}
+                        onPress={() => {setModalVisible(true); bookAppointment()}}
                     />
                 </View>
                 <View style={styles.centeredView}>
@@ -116,12 +160,6 @@ function SlotScreen({navigation}) {
                         </View>
                       </View>
                     </Modal>
-                    {/* <Pressable
-                      style={[styles.button, styles.buttonOpen]}
-                      onPress={() => setModalVisible(true)}
-                    >
-                      <Text style={styles.textStyle}>Show Modal</Text>
-                    </Pressable> */}
                 </View>
             </View>
         </View>
@@ -213,7 +251,25 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         marginBottom: 15,
         textAlign: "center"
-      }
+      },
+      action: {
+        flexDirection: 'row',
+        marginTop: 10,
+        borderBottomWidth: 0.5,
+        borderBottomColor: '#000',
+        paddingBottom: 5, 
+        alignItems: 'center',
+    },
+    button: {
+        borderWidth:1,
+        borderColor:'rgba(0,0,0,0.2)',
+        alignItems:'center',
+        justifyContent:'center',
+        width:50,
+        height:50,
+        backgroundColor:'#00f',
+        borderRadius:50,
+    },
 });
 
 export default SlotScreen;

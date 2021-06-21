@@ -1,19 +1,49 @@
 import React from 'react';
 import { StyleSheet, View, Text } from 'react-native';
-import { TouchableNativeFeedback } from 'react-native-gesture-handler';
-import firebase from 'firebase';
+import { TouchableNativeFeedback, TouchableOpacity} from 'react-native-gesture-handler';
+import { Icon } from 'react-native-elements';
+import call from 'react-native-phone-call';
 
 function Appointment(props) {
+    const args = {
+        number: props.contact,
+        prompt: true
+    }
+    
     return (
-        <TouchableNativeFeedback style={styles.doctor}>
-            <View style={styles.doctorContent}>
-                <Text style={styles.doctorName}>{`Dr. Rajat Dikshit`}</Text>
-                <Text style={styles.doctorInfo}>
-                    {`General Physician \n15 years experience`}
+        <View style={styles.doctor} >
+            <View style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'space-evenly'}}
+            >
+                <View style={styles.doctorContent}>
+                    <Text style={styles.doctorName}>Dr. {props.name}</Text>
+                    <Text style={styles.doctorInfo}>
+                        {`General Physician \n15 years experience`}
+                    </Text>
+                </View>
+                <Text style={{
+                    fontWeight:'bold', 
+                    backgroundColor: '#00ff73',
+                    padding: 10,
+                    borderRadius: 10,
+                    marginLeft: 50}}
+                >
+                    Time : {props.time}
                 </Text>
             </View>
-            <Text style={{fontWeight:'bold', marginLeft: 50}}>Time : 9:00 am - 12:00 pm</Text>
-        </TouchableNativeFeedback>
+            <View style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'space-between'}}
+            >
+                <Text style={{fontWeight:'bold'}}>Contact No.: {props.contact}</Text>
+                <TouchableOpacity style={styles.button} onPress={()=>call(args).catch(console.error)}>
+                    <Icon name="phone"  size={25} color="white" type="font-awesome"/>
+                </TouchableOpacity>
+            </View>
+        </View>
     );
 }
 
@@ -23,9 +53,7 @@ const styles=StyleSheet.create({
         borderRadius: 10,
         margin: 5,
         padding: 15,
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'center'
+        
     },
     doctorContent:{
         flexDirection: 'column',
@@ -36,9 +64,19 @@ const styles=StyleSheet.create({
         fontStyle: 'italic'
     },
     doctorName: {
-        fontSize: 16,
+        fontSize: 18,
         fontWeight: 'bold',
         padding: 2
+    },
+    button: {
+        borderWidth:1,
+        borderColor:'rgba(0,0,0,0.2)',
+        alignItems:'center',
+        justifyContent:'center',
+        width:50,
+        height:50,
+        backgroundColor:'#00f',
+        borderRadius:50,
     },
 })
 

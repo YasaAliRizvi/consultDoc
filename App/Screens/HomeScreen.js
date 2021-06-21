@@ -61,7 +61,7 @@ function HomeScreen({navigation}) {
                         <Text style={styles.heading}>Not Feeling Too Well?</Text>
                         <Text style={styles.subtext}>Treat common symptoms instantly via video consultation</Text>
                         <View style={styles.symptomList}>
-                            <MedicalIcon name="stethoscope" text="General Consultation" link="Summary"/>
+                            <MedicalIcon name="stethoscope" text="General Health Problems" link="Summary"/>
                             <MedicalIcon name="tooth" text="Dental Problems" link="Summary"/>
                             <MedicalIcon name="eye" text="Eye Problems" link="Summary"/>
                             <MedicalIcon name="heartbeat" text="Cardiac Problems" link="Summary"/>

@@ -21,7 +21,7 @@ import {useNavigation} from '@react-navigation/native';
 function MedicalIcon(props) {
     const navigation = useNavigation();
     return (
-        <TouchableNativeFeedback onPress={()=>navigation.navigate("Summary")}>
+        <TouchableNativeFeedback onPress={()=>navigation.navigate("Summary",{title: props.text})}>
             <View style={styles.iconStyle}>
                 <Icon name={props.name} color='black' size={30}/>
                 <Text style={styles.text}>{props.text}</Text>
